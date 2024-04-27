@@ -8,7 +8,9 @@ class CustomUser(AbstractUser):
     first_name = models.CharField('First name', max_length=30)
     last_name = models.CharField('Last name', max_length=30)
     date_of_birth = models.DateField(null=True, blank=True)
-    language_preference = models.CharField(max_length=10, null=True, blank=True)
+    learned_language = models.CharField(max_length=10, default='English')
+    interface_language = models.CharField(max_length=10, default='Ukrainian')
+    image = models.CharField(null=True, blank=True)
 
     objects = CustomUserManager()
 
@@ -18,6 +20,7 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = 'user'
         verbose_name_plural = 'users'
+
 
     def get_full_name(self):
         '''

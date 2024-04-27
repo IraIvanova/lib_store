@@ -16,11 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('users/', include('users.urls')),
+    path('user/', include('user_profile.urls')),
     path('', include('logistration.urls')),
     path('user-vocabulary/', include('user_vocabulary.urls')),
     # Add other URL patterns as needed
-]
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

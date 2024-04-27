@@ -1,0 +1,50 @@
+[
+  {
+    "model": "user_vocabulary.language",
+    "pk": 1,
+    "fields": {
+      "name": "English",
+      "locale": "en"
+    }
+  },
+  {
+    "model": "user_vocabulary.language",
+    "pk": 2,
+    "fields": {
+      "name": "French",
+      "locale": "fr"
+    }
+  },
+  {
+    "model": "user_vocabulary.language",
+    "pk": 3,
+    "fields": {
+      "name": "German",
+      "locale": "de"
+    }
+  },
+  {
+    "model": "user_vocabulary.language",
+    "pk": 4,
+    "fields": {
+      "name": "Ukrainian",
+      "locale": "uk"
+    }
+  },
+  {
+    "model": "user_vocabulary.language",
+    "pk": 5,
+    "fields": {
+      "name": "Sanskrit",
+      "locale": "sa"
+    }
+  },
+  {
+    "model": "user_vocabulary.language",
+    "pk": 6,
+    "fields": {
+      "name": "IAST",
+      "locale": "iast"
+    }
+  }
+]

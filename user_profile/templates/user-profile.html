@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}User profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="title-block p-4 text-center">
+        <h2>Your profile</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-lg-3 text-center">
+            <div class="">
+                <div>
+                    <img src="{{ user_image }}" id="avatar-logo" class="w-100" alt="img">
+                </div>
+                <div>
+                    <form method="post" action="{% url 'upload_avatar' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="file_id"><a class="btn btn-primary">Load image</a></label>
+                        <input type="file" id="file_id" name="file"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% if user_form %}
+        <div class="col-md-8">
+            <form method="post" action="{% url 'save_user_profile' %}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="feature-block">
+                            <h4>Personal info</h4>
+                            <p>{{ user_form.first_name|as_crispy_field }}</p>
+                            <p>{{ user_form.last_name|as_crispy_field }}</p>
+                            <p>{{ user_form.email|as_crispy_field }}</p>
+                            <p>{{ user_form.date_of_birth|as_crispy_field }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="feature-block">
+                            <h4>Settings</h4>
+                            <p>{{user_form.learned_language|as_crispy_field}}</p>
+                            <p>{{user_form.interface_language|as_crispy_field}}</p>
+                        </div>
+                    </div>
+                </div>
+                {% csrf_token %}
+
+                <button type="submit" class="btn btn-primary mt-2">Update profile</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="col-md-4">
+            <div class="feature-block">
+                <h4>Personal info</h4>
+                <p><span>Name:</span> {{user.first_name}}</p>
+                <p><span>Surname:</span> {{user.last_name}}</p>
+                <p><span>Email:</span> {{user.email}}</p>
+                <p><span>Date Of Birthday:</span> {{user.date_of_birth}}</p>
+                <a class="btn btn-primary text-white" href="{% url 'user_profile_edit' %}">Edit your profile</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="feature-block">
+                <h4>Settings</h4>
+                <p><span>Learned language:</span> {{user.learned_language}}</p>
+                <p><span>Interface language:</span> {{user.interface_language}}</p>
+            </div>
+        </div>
+
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script>
+    let upload_btn = document.getElementById("file_id");
+    let avatar = document.getElementById("avatar-logo");
+    upload_btn.addEventListener('change', (e) => {
+        e.preventDefault(e);
+    form = upload_btn.parentElement;
+    let formData = new FormData(form);
+    formData.append('type', 'avatar')
+
+    axios.post(form.action, formData)
+    .then(resp => {
+        if(resp.status === 200) {
+            avatar.src = resp.data.path;
+        }
+    })
+
+    })
+</script>
+{% endblock %}

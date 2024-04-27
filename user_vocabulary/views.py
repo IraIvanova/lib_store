@@ -4,7 +4,7 @@ from .forms import SearchWordForm
 from external_api.dictionary import DictionaryAPI
 import json
 
-api = DictionaryAPI("http://127.0.0.1:9026/api/dictionary")
+api = DictionaryAPI("http://127.0.0.1:8000/api/dictionary")
 
 
 class UserVocabularyPage(View):
@@ -23,7 +23,7 @@ class UserVocabularyPage(View):
 
         if search_string:
             words = api.search_word(search_string)
-            print(words, 1111)
+            print(words, 119)
 
             if words:
                 context.update({'words': words})

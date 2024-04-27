@@ -42,10 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "crispy_forms",
     "crispy_bootstrap4",
-    'users',
     'custom_user',
     'logistration',
     'user_vocabulary',
+    'user_profile',
+    'files',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +66,6 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'lib_store', 'templates'),
-            os.path.join(BASE_DIR, 'users', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -91,7 +91,7 @@ DATABASES = {
         'NAME': env("DB_NAME"),
         'USER': env("DB_USER"),
         'PASSWORD': env("DB_PASSWORD"),
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -148,3 +148,8 @@ AUTH_USER_MODEL = 'custom_user.CustomUser'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+
