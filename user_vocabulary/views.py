@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.views import View
 from .forms import SearchWordForm
+from .models import UserVocabulary
 from external_api.dictionary import DictionaryAPI
+from django.http import HttpResponse
 import json
 
 api = DictionaryAPI("http://127.0.0.1:8000/api/dictionary")
@@ -15,18 +17,21 @@ class UserVocabularyPage(View):
         search_form = SearchWordForm()
         search_string = request.GET.get('search')
 
+        words = UserVocabulary.objects.filter(user=user).values_list('word', flat=True)
+
         context = {
             'user': user,
             'search_form': search_form,
-            'words': None
+            'words': words
         }
 
         if search_string:
-            words = api.search_word(search_string)
-            print(words, 119)
+            search_results = api.search_word(search_string)
 
             if words:
-                context.update({'words': words})
+                context.update(
+                    {'words': sorted([next((word for word in words if word['id'] == s['id'] and 'added' in word), s)
+                                      for s in search_results], key=lambda s: s['word'])})
 
         return render(request, self.template_name, context)
 
@@ -34,7 +39,13 @@ class UserVocabularyPage(View):
 class UserVocabularyWordActionsView(View):
     def post(self, request):
         data = json.loads(request.body)
-        word = data.get('word')
+        word_id = data.get('word')
+        external_word = api.get_word_by_id(word_id)[0]
 
+        if not UserVocabulary.objects.filter(external_id=word_id, user=request.user):
+            external_word['added'] = True
+            UserVocabulary.objects.get_or_create(user=request.user, external_id=word_id, word=external_word)
+        else:
+            return HttpResponse(json.dumps({'error': 'word already added!'}), status=200)
 
-        print(data)
+        return HttpResponse(json.dumps({'message': 'Success!'}), status=200)

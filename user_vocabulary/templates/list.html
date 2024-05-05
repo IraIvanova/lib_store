@@ -31,7 +31,11 @@
                             <a><b>{{word.word}}</b></a>
                         </td>
                         <td>
+                            {% if not word.added %}
                             <button class="btn btn-primary btn-outline-primary add-to-list" data-word="{{word.id}}">Add to my list</button>
+                            {% else %}
+                            <button class="btn btn-info btn-outline-primary remove-from-list" data-word="{{word.id}}">Remove from my list</button>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

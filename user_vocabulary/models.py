@@ -11,8 +11,9 @@ class Language(models.Model):
 
 
 class UserVocabulary(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    word = models.CharField(max_length=255)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,  related_name='user_word_list')
+    external_id = models.CharField(max_length=255)
+    word = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -25,4 +25,12 @@ class DictionaryAPI:
             print(f"Error: {response.status_code}")
             return None
 
+    def get_word_by_id(self, word_id):
+        url = f"{self.base_url}/words?id={word_id}"
+        response = requests.get(url)
 
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"Error: {response.status_code}")
+            return None
