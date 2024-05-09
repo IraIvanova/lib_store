@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% load get_translation %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="title-block p-4 row">
+        <h2>{{word.translation}}</h2>
+
+
+        <div class="row">
+            <img src="{% get_media_prefix %}{{ word.image }}" id="word-image" class="col-5" alt="img">
+            {% if not word_form %}
+            <div class="col-7">
+                <h4>Your examples or notes:</h4>
+                {{word.examples|linebreaks}}
+                <hr>
+                <h4>Examples from web:</h4>
+                <hr>
+                <h4>Synonyms</h4>
+            </div>
+            {% endif %}
+        </div>
+        <a href="{% url 'edit_word_card' word.external_id %}" class="btn btn-primary mt-5" style="width: 300px">Edit
+            translation</a>
+        {% if word_form %}
+
+        <div class="col-5">
+            <form method="post" action="{% url 'upload_word_image' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label for="file_id"><a class="btn btn-primary">Load word image</a></label>
+                <input type="file" id="file_id" data-word="{{ word.external_id }}" name="file"/>
+            </form>
+        </div>
+        <div class="col-md-7">
+            <form method="post" action="{% url 'save_word' %}">
+                <p>{{ word_form.examples|as_crispy_field }}</p>
+                {% csrf_token %}
+                <input type="hidden" value="{{word.external_id}}" name="word_id"/>
+                <button type="submit" class="btn btn-primary mt-2">Update profile</button>
+            </form>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block customJs %}
+<script>
+    let upload_btn = document.getElementById("file_id");
+    let word_image = document.getElementById("word-image");
+    upload_btn.addEventListener('change', (e) => {
+        e.preventDefault(e);
+    form = upload_btn.parentElement;
+    let formData = new FormData(form);
+    formData.append('id', upload_btn.dataset.word )
+    formData.append('type', 'words')
+
+    axios.post(form.action, formData)
+    .then(resp => {
+        if(resp.status === 200) {
+            word_image.src = resp.data.path;
+        }
+    })
+
+    })
+</script>
+{% endblock %}

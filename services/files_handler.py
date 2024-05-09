@@ -5,6 +5,7 @@ from files.utils import generate_unique_filename
 def upload_file(request):
     if request.method == 'POST':
         form = FileForm(request.POST, request.FILES)
+        print(request.FILES, 333)
         if form.is_valid():
             uploaded_file = request.FILES['file']
 

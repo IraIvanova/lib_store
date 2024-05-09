@@ -3,7 +3,7 @@
     // Add a click event listener to the button
         addButton.addEventListener('click', function() {
             // Send a POST request to the backend when the button is clicked
-            axios.post('/user-vocabulary/words/actions/', {
+            axios.post('/user-vocabulary/words/', {
                 // Add any data you want to send to the backend
                 word: addButton.dataset.word
             })
