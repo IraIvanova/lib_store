@@ -22,6 +22,7 @@ class CustomUser(AbstractUser):
     interface_language = models.CharField(max_length=10, default='Ukrainian')
     image = models.CharField(null=True, blank=True)
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
+    email_is_verified = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 

@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, ModelChoiceField
 from django.forms.widgets import DateInput, Select
-from custom_user.models import CustomUser
+from custom_user.models import CustomUser, Plan
 from user_vocabulary.models import Language
 
 
@@ -18,6 +18,7 @@ class CreateUserForm(UserCreationForm):
         user.language_preference = 'Ukrainian'
         user.email = self.cleaned_data["email"]
         user.username = ''.join(char for char in user.email if char.isalnum() or char in ['.', '_'])
+        user.plan = Plan.objects.get(slug='free')
 
         if commit:
             user.save()
