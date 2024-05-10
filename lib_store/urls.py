@@ -24,6 +24,8 @@ urlpatterns = [
     path('user/', include('user_profile.urls')),
     path('', include('logistration.urls')),
     path('user-vocabulary/', include('user_vocabulary.urls')),
+    path('library/', include('library.urls')),
+    path('subscription/', include('custom_user.urls')),
     # Add other URL patterns as needed
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -3,6 +3,16 @@ from django.db import models
 from .managers import CustomUserManager
 
 
+class Plan(models.Model):
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    desc = models.TextField()
+    price = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.title
+
+
 class CustomUser(AbstractUser):
     email = models.EmailField('Email address', unique=True)
     first_name = models.CharField('First name', max_length=30)
@@ -11,6 +21,7 @@ class CustomUser(AbstractUser):
     learned_language = models.CharField(max_length=10, default='English')
     interface_language = models.CharField(max_length=10, default='Ukrainian')
     image = models.CharField(null=True, blank=True)
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
 
     objects = CustomUserManager()
 

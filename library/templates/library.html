@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load get_translation %}
+
+{% block title %}Vocabulary list{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="heading"><h3 class="title">Library</h3></div>
+    <div class="row">
+        <div class="col-lg-6">
+            <form method="get" action="{% url 'library' %}">
+                {{search_form.search|as_crispy_field}}
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        <div class="col-lg-4"></div>
+
+    </div>
+    <div>
+        <div class="row">
+            {% if books %}
+            <table class="table table-stripped">
+                {% for book in books %}
+                <tr>
+                    <td>
+                        <a class="text-dark fw-bold">
+                           {{ book.name }} - {{book.author}}</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'book_page' book.id %}" class="btn btn-info btn-outline-primary add-to-list"
+                                data-word="{{book.id}}">Read
+                        </a>
+                        <button class="btn btn-info btn-outline-primary add-to-fav-list"
+                                data-word="{{book.id}}">Add to saved books
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="http://{{ request.get_host }}{% static 'js/vocabulary.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load get_translation %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="title-block p-4 row">
+        <h2 class="mb-3 col-7">{% get_translation word request.user.learned_language %}</h2>
+         <button class="btn btn-primary add-to-list col-2" id="not-saved" data-word="{{word.id}}">Add to my list</button>
+    </div>
+        <div class="row">
+            <div class="col-7">
+                <h4>Examples from web:</h4>
+                {% if word.synonyms %}
+                    <hr>
+                    <h4>Synonyms</h4>
+                    <div>
+                        {% for synonym in word.synonyms %}
+                        <a class="text-primary px-2" href="{% url 'show_word_card' synonym.id %}">{% get_translation synonym request.user.learned_language %}</a>
+                        {% if not forloop.last %} | {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="http://{{ request.get_host }}{% static 'js/vocabulary.js' %}"></script>
+{% endblock %}

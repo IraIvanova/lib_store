@@ -3,7 +3,7 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from django.views import View
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import resolve, path
+from django.urls import resolve, path, reverse
 from services.files_handler import upload_file
 from .forms import SearchWordForm, WordForm
 from .models import UserVocabulary
@@ -45,31 +45,45 @@ class UserVocabularyWordActionsView(View):
         word_id = data.get('word')
         user = request.user
 
-        # form = WordForm(request.POST)
-        # if form.is_valid():
         external_word = api.get_word_by_id(word_id, user.learned_language)[0]
 
         if not UserVocabulary.objects.filter(external_id=word_id, user=user, language=user.learned_language):
             UserVocabulary.objects.update_or_create(user=request.user, external_id=word_id,
                                                      translation=external_word['translation'],
                                                      language=user.learned_language)
+            context = {
+                'message': 'Success!'
+            }
+            print(data)
+
+            if data.get('page') == 'word':
+                context.update(
+                    {
+                        'redirect': reverse('show_word_card', kwargs={'id': word_id})
+                    }
+                )
         else:
             return HttpResponse(json.dumps({'error': 'word already added!'}), status=200)
 
-        return HttpResponse(json.dumps({'message': 'Success!'}), status=200)
+        return HttpResponse(json.dumps(context), status=200)
 
     def get(self, request, id=None):
         current_url = resolve(request.path_info).url_name
         word = find_word_by_id(id, request.user)
+        additional_info = api.get_additional_info_for_word(id, request.user.learned_language)[0]
 
         if not word:
-            word = api.get_word_by_id(id, request.user.learned_language)[0]
+            word = api.get_additional_info_for_word(id, request.user.learned_language)[0]
+            return render(request, 'word_card_not_saved.html', {'word': word})
 
         form = WordForm(instance=word)
 
         context = {
             'word': word,
-            'word_form': form if current_url == 'edit_word_card' else None
+            'word_form': form if current_url == 'edit_word_card' else None,
+            'additional': {
+                'synonyms': additional_info.get('synonyms')
+            }
         }
 
         return render(request, 'word_card.html', context)

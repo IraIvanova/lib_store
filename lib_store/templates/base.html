@@ -37,15 +37,12 @@
 
         <div id="logo">
             <h1><a href="index.html"><span>e</span>Startup</a></h1>
-            <!-- Uncomment below if you prefer to use an image logo -->
-            <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" title="" /></a>-->
         </div>
 
         <nav id="navbar" class="navbar">
             <ul>
-                <li><a class="nav-link" href="/">Home</a></li>
-                <li><a class="nav-link scrollto" href="#about-us">About</a></li>
-                <li><a class="nav-link scrollto" href="#features">Features</a></li>
+                <li><a class="nav-link" href="{% url 'user_vocabulary_list' %}">Vocabulary</a></li>
+                <li><a class="nav-link" href="{% url 'library' %}">Library</a></li>
 
                 {% if request.user.is_authenticated %}
                 <li><a class="nav-link" href="{% url 'user_profile' %}">
@@ -53,8 +50,8 @@
                     <span>{{user.first_name}}</span>
                 </a></li>
                 {% else %}
-                 <li><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                 <li><a class="nav-link" href="{% url 'register' %}">Register</a></li>
+                <li><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                <li><a class="nav-link" href="{% url 'register' %}">Register</a></li>
                 {% endif %}
             </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>
@@ -83,16 +80,14 @@
     <!-- ======= Get Started Section ======= -->
     <section id="get-started" class="mt-2 padd-section ">
 
-        <!--      <div class="container" data-aos="fade-up">-->
-
-        <!--        <div class="section-title text-center">-->
-
-        <!--          <h2>simple systeme fordiscount </h2>-->
-        <!--          <p class="separator">Integer cursus bibendum augue ac cursus .</p>-->
-
-        <!--        </div>-->
-        <!--      </div>-->
         <div class="container">
+            {% if messages %}
+            <ul class="messages mt-3 alert alert-success">
+                {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }} text-success fw-bold"{% endif %} >{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {% block content %}{% endblock content %}
         </div>
 

@@ -1,0 +1,32 @@
+[
+  {
+    "model": "custom_user.plan",
+    "pk": 1,
+    "fields": {
+      "title": "Free",
+      "slug": "free",
+      "desc": "some desc",
+      "price": "0"
+    }
+  },
+  {
+    "model": "custom_user.plan",
+    "pk": 2,
+    "fields": {
+     "title": "Basic",
+      "slug": "basic",
+      "desc": "some desc",
+      "price": "10"
+    }
+  },
+  {
+    "model": "custom_user.plan",
+    "pk": 3,
+    "fields": {
+      "title": "Premium",
+      "slug": "premium",
+      "desc": "some desc",
+      "price": "15"
+    }
+  }
+]

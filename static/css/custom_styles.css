@@ -5,3 +5,79 @@
 #file_id {
     display: none;
 }
+
+.font-size-12 {
+    font-size: 12px;
+}
+.pricing {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.pricing .plan {
+  background-color: #fff;
+  padding: 2.5rem;
+  margin: 12px;
+  border-radius: 5px;
+  text-align: center;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.pricing .plan h2 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+.pricing .plan .price {
+  margin-bottom: 1rem;
+  font-size: 30px;
+}
+.pricing .plan ul.features {
+  list-style-type: none;
+  text-align: left;
+}
+.pricing .plan ul.features li {
+  margin: 8px;
+}
+.pricing .plan ul.features li .fas {
+  margin-right: 4px;
+}
+.pricing .plan ul.features li .fa-check-circle {
+  color: #6ab04c;
+}
+.pricing .plan ul.features li .fa-times-circle {
+  color: #eb4d4b;
+}
+.pricing .plan a {
+  border: none;
+  width: 100%;
+  padding: 12px 35px;
+  margin-top: 1rem;
+  background-color: #6ab04c;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.pricing .plan.popular {
+  border: 2px solid #6ab04c;
+  position: relative;
+  transform: scale(1.08);
+}
+.pricing .plan.popular span {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #6ab04c;
+  color: #fff;
+  padding: 4px 20px;
+  font-size: 18px;
+  border-radius: 5px;
+}
+.pricing .plan:hover {
+  box-shadow: 5px 7px 67px -28px rgba(0, 0, 0, 0.37);
+}
+
+ul.messages {
+    list-style: none
+}

@@ -8,6 +8,7 @@
 <div class="container">
     <div class="title-block p-4 text-center">
         <h2>Your profile</h2>
+        <h4>Your subscription plan - {{user.plan.title}} <a class="text-primary font-size-12" href="{% url 'subscription_plans' %}">(click here to change it)</a></h4>
     </div>
 
     <div class="row">

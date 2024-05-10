@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'logistration',
     'user_vocabulary',
     'user_profile',
+    'library',
     'files',
 ]
 

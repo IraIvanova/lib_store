@@ -1,0 +1,24 @@
+<h1>Choose the plan that fits for you</h1>
+<p>
+    Deploy your sites to global infrastructure in seconds. No credit card
+    required
+</p>
+<div class="pricing">
+    {% for plan in plans %}
+    <div class="plan {% if request.user.plan == plan %} popular {% endif %}">
+        {% if request.user.plan == plan %}
+        <span>Your plan</span>
+        {% endif %}
+        <h2>{{plan.title}}</h2>
+        <div class="price">{{plan.price}}$</div>
+        <ul class="features">
+            {{plan.desc}}
+        </ul>
+        {% if request.user.plan == plan %}
+        <a href="">Enjoy!</a>
+        {% else %}
+        <a href="{% url 'change_plan' plan.id %}">Buy now!</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
