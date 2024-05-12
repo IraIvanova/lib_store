@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Plan
@@ -15,8 +16,9 @@ class SubscriptionPlanView(View):
 
 class SubscriptionChangePlanView(View):
     def get(self, request, id):
-        request.user.plan = Plan.objects.get(pk=id)
-        request.user.save()
+        plan = Plan.objects.get(pk=id)
+        request.user.groups.clear()
+        request.user.groups.add(Group.objects.get(name=plan.slug))
 
         messages.success(request, "Subscription plan was successfully changed!")
 

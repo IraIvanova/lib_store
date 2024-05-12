@@ -15,6 +15,7 @@ class UserVocabulary(models.Model):
     external_id = models.IntegerField()
     language = models.CharField(max_length=50)
     translation = models.CharField()
+    transcription = models.CharField(null=True, blank=True)
     image = models.CharField(null=True, blank=True)
     examples = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -8,6 +8,7 @@ class DictionaryAPI:
     def send_request(self, url):
         response = requests.get(url)
         if response.status_code == 200:
+            print(response.json())
             return response.json()
         else:
             print(f"Error: {response.status_code}")

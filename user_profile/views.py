@@ -4,13 +4,16 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import resolve
+from django.utils import translation
 from custom_user.forms import EditUserForm
 from services.files_handler import upload_file
+from user_vocabulary.models import Language
 import json
 
 
 class UsersProfileView(LoginRequiredMixin, View):
-    template_name = 'user-profile.html'
+    login_url = "/login/"
+    template_name = "user-profile.html"
 
     def get(self, request):
         user = request.user
@@ -33,6 +36,11 @@ class UsersProfileView(LoginRequiredMixin, View):
         user = request.user
         form = EditUserForm(instance=user, data=request.POST)
         if form.is_valid():
+            print(request.POST, user,request.POST.get('interface_language'))
+            lang = Language.objects.get(name=request.POST.get('interface_language'))
+            translation.activate(lang.locale)
+            # response = HttpResponse(...)
+            # response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
             form.save()
 
             return redirect('user_profile')

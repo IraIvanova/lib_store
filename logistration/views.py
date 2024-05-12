@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
@@ -18,6 +19,8 @@ def register(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             user = form.save()
+            user.groups.add(Group.objects.get(name="free_sub"))
+            # user.save()
             login(request, user)
             if next:
                 return redirect(next)
@@ -34,6 +37,7 @@ def register(request):
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
+
         if form.is_valid():
             user = form.get_user()
             login(request, user)

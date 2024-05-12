@@ -2,13 +2,15 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% load get_translation %}
+{% load has_group %}
+{% load i18n %}
 
 {% block title %}Vocabulary list{% endblock %}
 
 {% block content %}
 
 <div class="container">
-    <div class="heading"><h3 class="title">My vocabulary</h3></div>
+    <div class="heading"><h3 class="title">{% trans 'myVocabulary' %}</h3></div>
     <div class="row">
         <div class="col-lg-6">
             <form method="get" action="{% url 'user_vocabulary_list' %}">
@@ -31,13 +33,15 @@
                 {% if not word.external_id %}
                 <tr>
                     <td>
-                        <a class="text-dark fw-bold">{{ word.translation }}</a>
+                        <a class="text-dark fw-bold" href="{% url 'show_word_card' word.word_id %}">{{ word.translation }}</a>
                     </td>
+                    {% if request.user|has_group:"basic_sub,premium_sub" %}
                     <td>
                         <button class="btn btn-primary btn-outline-primary add-to-list" data-word="{{word.word_id}}">Add
                             to my list
                         </button>
                     </td>
+                    {% endif %}
                 </tr>
                 {% else %}
                 <tr>

@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% load get_translation %}
+{% load has_group %}
 
 {% block title %}Vocabulary list{% endblock %}
 
@@ -33,9 +34,11 @@
                         <a href="{% url 'book_page' book.id %}" class="btn btn-info btn-outline-primary add-to-list"
                                 data-word="{{book.id}}">Read
                         </a>
+                        {% if request.user|has_group:"basic_sub,premium_sub" %}
                         <button class="btn btn-info btn-outline-primary add-to-fav-list"
                                 data-word="{{book.id}}">Add to saved books
                         </button>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

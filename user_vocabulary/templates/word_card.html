@@ -2,19 +2,34 @@
 {% load static %}
 {% load get_translation %}
 {% load crispy_forms_tags %}
+{% load has_group %}
+{% load replace_word %}
 
 {% block content %}
 <div class="container">
     <div class="title-block p-4 row">
-        <h2 class="mb-3">{{word.translation}}</h2>
+        <div class="d-flex align-items-center mb-2">
+            <h2 class="mb-0" id="word_heading">{{word.translation}}</h2> <img class="px-2"
+                                                                              src="{% static 'img/sound.png' %}"
+                                                                              height="25" id="sound">
+        </div>
+        {% if word.transcription %}
+        <p>{{word.transcription}}</p>
+        {% endif %}
         <div class="row">
-                <img src="{% if word.image %}{% get_media_prefix %}{{ word.image }} {% else %} {% static 'img/word_default.png' %} {% endif %}" id="word-image" class="col-5" alt="img">
+            <img src="{% if word.image %}{% get_media_prefix %}{{ word.image }} {% else %} {% static 'img/word_default.png' %} {% endif %}"
+                 id="word-image" class="col-5" alt="img">
             {% if not word_form %}
             <div class="col-7">
                 <h4>Your examples or notes:</h4>
                 {{word.examples|linebreaks}}
+                {% if additional.examples %}
                 <hr>
-                <h4>Examples from web:</h4>
+                <h4>Examples from library:</h4>
+                {% for example in additional.examples %}
+                    <p>{{ example.example|replace_word:"gunslinger"|safe }} <a href="{% url 'book_page' example.book %}">Go to book</a></p>
+                {% endfor %}
+                {% endif %}
                 {% if additional.synonyms %}
                 <hr>
                 <h4>Synonyms</h4>
@@ -28,8 +43,10 @@
             </div>
             {% endif %}
         </div>
+        {% if request.user|has_group:"basic_sub,premium_sub" %}
         <a href="{% url 'edit_word_card' word.external_id %}" class="btn btn-primary mt-5" style="width: 300px">Edit
             translation</a>
+        {% endif %}
         {% if word_form %}
 
         <div class="col-5">
@@ -51,8 +68,8 @@
 
     </div>
     <button class="btn btn-info btn-outline-primary remove-from-list mt-2 text-center col-2"
-                                data-word="{{word.external_id}}">Remove from my list
-                        </button>
+            data-word="{{word.external_id}}">Remove from my list
+    </button>
 </div>
 
 {% endblock %}
@@ -61,20 +78,30 @@
 <script>
     let upload_btn = document.getElementById("file_id");
     let word_image = document.getElementById("word-image");
-    upload_btn.addEventListener('change', (e) => {
-        e.preventDefault(e);
-    form = upload_btn.parentElement;
-    let formData = new FormData(form);
-    formData.append('id', upload_btn.dataset.word )
-    formData.append('type', 'words')
+    if (upload_btn) {
+        upload_btn.addEventListener('change', (e) => {
+            e.preventDefault(e);
+        form = upload_btn.parentElement;
+        let formData = new FormData(form);
+        formData.append('id', upload_btn.dataset.word )
+        formData.append('type', 'words')
 
-    axios.post(form.action, formData)
-    .then(resp => {
-        if(resp.status === 200) {
-            word_image.src = resp.data.path;
-        }
-    })
+        axios.post(form.action, formData)
+        .then(resp => {
+            if(resp.status === 200) {
+                word_image.src = resp.data.path;
+            }
+        })
+        })
+    }
 
-    })
+    function speak() {
+    let text = document.getElementById('word_heading').innerText;
+    speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+}
+   document.getElementById('sound').addEventListener('click', (e) => {
+        speak();
+   })
+
 </script>
 {% endblock %}

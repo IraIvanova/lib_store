@@ -1,4 +1,5 @@
 from external_api.dictionary import DictionaryAPI
+from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.views import View
@@ -6,20 +7,27 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import resolve, path, reverse
 from services.files_handler import upload_file
 from .forms import SearchWordForm, WordForm
+from django.contrib.auth.models import Permission
 from .models import UserVocabulary
 from .utils import find_word_by_id
+from datetime import date
 import json
 
 api = DictionaryAPI("http://127.0.0.1:8000/api/dictionary")
 
 
-class UserVocabularyPage(View):
+class UserVocabularyPage(UserPassesTestMixin, View):
     template_name = 'list.html'
+
+    def test_func(self):
+        return self.request.user.email_is_verified == True
 
     def get(self, request):
         user = request.user
         search_form = SearchWordForm()
         search_string = request.GET.get('search')
+
+        print(Permission.objects.filter(group__user=user).values_list('codename', flat=True))
 
         words = list(UserVocabulary.objects.filter(user=user, language=user.learned_language))
 
@@ -40,22 +48,28 @@ class UserVocabularyPage(View):
 
 
 class UserVocabularyWordActionsView(View):
+
     def post(self, request):
         data = json.loads(request.body)
         word_id = data.get('word')
         user = request.user
 
         external_word = api.get_word_by_id(word_id, user.learned_language)[0]
-
+        print(external_word, 5656)
         if not UserVocabulary.objects.filter(external_id=word_id, user=user, language=user.learned_language):
-            UserVocabulary.objects.update_or_create(user=request.user, external_id=word_id,
+            today = date.today()
+
+            if UserVocabulary.objects.filter(created_at__date=today).count() >= 45 and user.groups.first().name != "premium_sub":
+                return HttpResponse(json.dumps({'error': 'limit reached!'}), status=200)
+            else:
+                UserVocabulary.objects.update_or_create(user=request.user, external_id=word_id,
                                                      translation=external_word['translation'],
+                                                     transcription=external_word['transcription'],
                                                      language=user.learned_language)
             context = {
                 'message': 'Success!'
             }
-            print(data)
-
+         
             if data.get('page') == 'word':
                 context.update(
                     {
@@ -82,10 +96,11 @@ class UserVocabularyWordActionsView(View):
             'word': word,
             'word_form': form if current_url == 'edit_word_card' else None,
             'additional': {
-                'synonyms': additional_info.get('synonyms')
+                'synonyms': additional_info.get('synonyms'),
+                'examples': additional_info.get('examples')
             }
         }
-
+        print(additional_info,85)
         return render(request, 'word_card.html', context)
 
 

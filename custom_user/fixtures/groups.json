@@ -1,0 +1,20 @@
+[
+  {
+    "model": "auth.group",
+    "fields": {
+      "name": "free_sub"
+    }
+  },
+  {
+    "model": "auth.group",
+    "fields": {
+      "name": "basic_sub"
+    }
+  },
+  {
+    "model": "auth.group",
+    "fields": {
+      "name": "premium_sub"
+    }
+  }
+]

@@ -1,3 +1,5 @@
+{% load has_group %}
+
 <h1>Choose the plan that fits for you</h1>
 <p>
     Deploy your sites to global infrastructure in seconds. No credit card
@@ -5,8 +7,8 @@
 </p>
 <div class="pricing">
     {% for plan in plans %}
-    <div class="plan {% if request.user.plan == plan %} popular {% endif %}">
-        {% if request.user.plan == plan %}
+    <div class="plan {% if request.user.groups.first.name == plan.slug %} popular {% endif %}">
+        {% if request.user.groups.first.name == plan.slug %}
         <span>Your plan</span>
         {% endif %}
         <h2>{{plan.title}}</h2>
