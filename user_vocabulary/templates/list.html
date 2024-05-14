@@ -29,7 +29,7 @@
             {% if words %}
             <table class="table table-stripped">
                 {% for word in words %}
-
+                <input type="hidden" id="word_add_route" value="{% url 'add_word_to_list' %}" />
                 {% if not word.external_id %}
                 <tr>
                     <td>
@@ -37,7 +37,7 @@
                     </td>
                     {% if request.user|has_group:"basic_sub,premium_sub" %}
                     <td>
-                        <button class="btn btn-primary btn-outline-primary add-to-list" data-word="{{word.word_id}}">Add
+                        <button type="button" class="btn btn-primary btn-outline-primary add-to-list" data-word="{{word.word_id}}">Add
                             to my list
                         </button>
                     </td>

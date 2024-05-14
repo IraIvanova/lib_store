@@ -36,11 +36,9 @@ class UsersProfileView(LoginRequiredMixin, View):
         user = request.user
         form = EditUserForm(instance=user, data=request.POST)
         if form.is_valid():
-            print(request.POST, user,request.POST.get('interface_language'))
             lang = Language.objects.get(name=request.POST.get('interface_language'))
             translation.activate(lang.locale)
-            # response = HttpResponse(...)
-            # response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
+
             form.save()
 
             return redirect('user_profile')

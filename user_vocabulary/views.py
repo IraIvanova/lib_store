@@ -27,8 +27,6 @@ class UserVocabularyPage(UserPassesTestMixin, View):
         search_form = SearchWordForm()
         search_string = request.GET.get('search')
 
-        print(Permission.objects.filter(group__user=user).values_list('codename', flat=True))
-
         words = list(UserVocabulary.objects.filter(user=user, language=user.learned_language))
 
         context = {
@@ -55,21 +53,22 @@ class UserVocabularyWordActionsView(View):
         user = request.user
 
         external_word = api.get_word_by_id(word_id, user.learned_language)[0]
-        print(external_word, 5656)
+
         if not UserVocabulary.objects.filter(external_id=word_id, user=user, language=user.learned_language):
             today = date.today()
 
-            if UserVocabulary.objects.filter(created_at__date=today).count() >= 45 and user.groups.first().name != "premium_sub":
+            if UserVocabulary.objects.filter(
+                    created_at__date=today).count() >= 45 and user.groups.first().name != "premium_sub":
                 return HttpResponse(json.dumps({'error': 'limit reached!'}), status=200)
             else:
                 UserVocabulary.objects.update_or_create(user=request.user, external_id=word_id,
-                                                     translation=external_word['translation'],
-                                                     transcription=external_word['transcription'],
-                                                     language=user.learned_language)
+                                                        translation=external_word['translation'],
+                                                        transcription=external_word['transcription'],
+                                                        language=user.learned_language)
             context = {
                 'message': 'Success!'
             }
-         
+
             if data.get('page') == 'word':
                 context.update(
                     {
@@ -87,21 +86,44 @@ class UserVocabularyWordActionsView(View):
         additional_info = api.get_additional_info_for_word(id, request.user.learned_language)[0]
 
         if not word:
-            word = api.get_additional_info_for_word(id, request.user.learned_language)[0]
+            word = additional_info
             return render(request, 'word_card_not_saved.html', {'word': word})
 
         form = WordForm(instance=word)
-
+        transl_on_user_lang = list(
+            filter(lambda x: (x['language'] == request.user.interface_language), additional_info['translations']))
         context = {
             'word': word,
             'word_form': form if current_url == 'edit_word_card' else None,
             'additional': {
                 'synonyms': additional_info.get('synonyms'),
-                'examples': additional_info.get('examples')
+                'examples': additional_info.get('examples'),
+                'translation_on_user_lang': transl_on_user_lang[0]['translation'] if transl_on_user_lang else ''
             }
         }
-        print(additional_info,85)
+
         return render(request, 'word_card.html', context)
+
+    def delete(self, request, *args, **kwargs):
+        print(request.body, 'jojojojo')
+        data = json.loads(request.body)
+        word_id = data.get('word')
+        user = request.user
+        print(data, 333)
+        UserVocabulary.objects.filter(external_id=word_id, user=user, language=user.learned_language).delete()
+
+        context = {
+            'message': 'Word successfully deleted!'
+        }
+
+        if data.get('page') == 'word':
+            context.update(
+                {
+                    'redirect': reverse('user_vocabulary_list')
+                }
+            )
+
+        return HttpResponse(json.dumps(context), status=200)
 
 
 class UserVocabularySaveWordView(View):

@@ -9,9 +9,10 @@
 <div class="container">
     <div class="title-block p-4 row">
         <div class="d-flex align-items-center mb-2">
-            <h2 class="mb-0" id="word_heading">{{word.translation}}</h2> <img class="px-2"
-                                                                              src="{% static 'img/sound.png' %}"
-                                                                              height="25" id="sound">
+            <h2 class="mb-0" id="word_heading">{% if additional.translation_on_user_lang %}{{additional.translation_on_user_lang}} - {% endif %}<span>{{word.translation}}</span></h2>
+            <img class="px-2"
+                 src="{% static 'img/sound.png' %}"
+                 height="25" id="sound">
         </div>
         {% if word.transcription %}
         <p>{{word.transcription}}</p>
@@ -27,7 +28,8 @@
                 <hr>
                 <h4>Examples from library:</h4>
                 {% for example in additional.examples %}
-                    <p>{{ example.example|replace_word:"gunslinger"|safe }} <a href="{% url 'book_page' example.book %}">Go to book</a></p>
+                <p>{{ example.example|replace_word:word.translation|safe }} <a href="{% url 'book_page' example.book %}">Go
+                    to book</a></p>
                 {% endfor %}
                 {% endif %}
                 {% if additional.synonyms %}
@@ -35,7 +37,8 @@
                 <h4>Synonyms</h4>
                 <div>
                     {% for synonym in additional.synonyms %}
-                    <a class="text-primary" href="{% url 'show_word_card' synonym.id %}">{% get_translation synonym request.user.learned_language %}</a>
+                    <a class="text-primary" href="{% url 'show_word_card' synonym.id %}">{% get_translation synonym
+                        request.user.learned_language %}</a>
                     {% if not forloop.last %} | {% endif %}
                     {% endfor %}
                 </div>
@@ -96,7 +99,7 @@
     }
 
     function speak() {
-    let text = document.getElementById('word_heading').innerText;
+    let text = document.getElementById('word_heading').children[0].innerText;
     speechSynthesis.speak(new SpeechSynthesisUtterance(text));
 }
    document.getElementById('sound').addEventListener('click', (e) => {
